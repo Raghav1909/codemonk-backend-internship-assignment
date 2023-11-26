@@ -8,6 +8,7 @@ class Book(models.Model):
     genre = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     no_of_pages = models.IntegerField()
+    book_image = models.ImageField(upload_to='book_images/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.title} - {self.author}"

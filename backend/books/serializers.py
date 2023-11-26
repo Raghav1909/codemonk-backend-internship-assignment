@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Book
 from datetime import datetime
+import re
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,9 +14,14 @@ class BookSerializer(serializers.ModelSerializer):
         return value
     
     def validate_author(self, value):
-        if value.isalpha() == False:
-            raise serializers.ValidationError("Author name must contain only letters")
-        return value
+        pattern = re.compile("^[A-Za-z.]+$")
+        name = str(value).replace(" ", "")
+        match = re.search(pattern, name)
+
+        if match is not None and match.group() == name:
+            return value
+        else:
+            raise serializers.ValidationError("Invalid author name")
     
     def validate_no_of_pages(self, value):
         if value < 0:
@@ -31,7 +37,7 @@ class BookSerializer(serializers.ModelSerializer):
         currentYear = datetime.now().year
 
         try:
-            int(var)
+            int(currentYear)
 
         except ValueError:
             raise serializers.ValidationError("Publication year must be an integer")
